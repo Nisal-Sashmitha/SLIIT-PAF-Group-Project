@@ -21,7 +21,7 @@ import org.jsoup.*;
 import org.jsoup.parser.*;
 import org.jsoup.nodes.Document;
 
-@Path("/Items")
+@Path("/Complaints")
 public class complaintservice {
 	
 	
