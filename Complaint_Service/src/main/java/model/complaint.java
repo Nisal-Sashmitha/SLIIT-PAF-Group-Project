@@ -63,16 +63,16 @@ public class complaint {
 	
 	
 	//read
-		public String readItems()
+		public String readcomplaints()
 		{
 		String output = "";
 		try
+		{
+		Connection con = dbconn.connect(); 
+				if (con == null)
 				{
-			Connection con = dbconn.connect(); 
-					if (con == null)
-					{
-						return "Error while connecting to the database for reading."; 
-					}
+					return "Error while connecting to the database for reading."; 
+				}
 					// Prepare the html table to be displayed
 					output = "<table border='1'><tr><th>complaint type</th><th>contact number</th>" +
 					"<th>message</th>" +
@@ -87,7 +87,7 @@ public class complaint {
 					// iterate through the rows in the result set
 					while (rs.next())
 					{
-						String itemID = Integer.toString(rs.getInt("complaintID"));
+						String complaintID = Integer.toString(rs.getInt("complaintID"));
 						String accno = rs.getString("AccNo");
 						String complainttype = rs.getString("complaintType");
 						String mobile = rs.getString("contactNo");
@@ -108,7 +108,7 @@ public class complaint {
 						output += "<td><input name='btnUpdate' type='button' value='Update' class='btn btn-secondary'></td>"
 						+ "<td><form method='post' action='items.jsp'>"
 						+ "<input name='btnRemove' type='submit' value='Remove' class='btn btn-danger'>"
-						+ "<input name='itemID' type='hidden' value='" + itemID
+						+ "<input name='itemID' type='hidden' value='" + complaintID
 						+ "'>" + "</form></td></tr>";
 					}
 					con.close();
