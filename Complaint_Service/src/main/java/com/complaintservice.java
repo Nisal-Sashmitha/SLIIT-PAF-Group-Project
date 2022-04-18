@@ -25,18 +25,21 @@ import org.jsoup.nodes.Document;
 public class complaintservice {
 	
 	
+	//create a object of the complaint model class
 	complaint Complaintobj = new complaint();
 	
 	
+	//Read 
 	@GET
 	@Path("/")
 	@Produces(MediaType.TEXT_HTML)
-	public String readItems()
+	public String readComplaints()
 	{
-		return Complaintobj.readItems();
+		return Complaintobj.readcomplaints();
 	
 	}
 	
+	//insert data 
 	@POST
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -52,15 +55,15 @@ public class complaintservice {
 	
 	
 	
-	
+	//Update data
 	@PUT
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public String updateComplaint(String itemData)
+	public String updateComplaint(String complaintData)
 	{
 	//Convert the input string to a JSON object
-	JsonObject Complaintobject = new JsonParser().parse(itemData).getAsJsonObject();
+	JsonObject Complaintobject = new JsonParser().parse(complaintData).getAsJsonObject();
 	//Read the values from the JSON object
 	String complainid = Complaintobject.get("complaintID").getAsString();
 	String Accountno = Complaintobject.get("AccNo").getAsString();
@@ -76,6 +79,7 @@ public class complaintservice {
 	}
 
 	
+	//delete data
 	@DELETE
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_XML)
