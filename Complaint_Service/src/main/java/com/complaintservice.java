@@ -39,6 +39,16 @@ public class complaintservice {
 	
 	}
 
+	//read complaints related to a single account
+	@GET
+	@Path("/Sacoount")
+	@Produces({ MediaType.TEXT_HTML })
+	@Consumes(MediaType.APPLICATION_JSON)
+	public String readComplaints(String id) {
+		JsonObject complaintObject = new JsonParser().parse(id).getAsJsonObject();
+		String complaintID = complaintObject.get("AccNo").getAsString();
+		return Complaintobj.readsinglecomplaints(complaintID );
+	}
 	
 	
 	
@@ -65,20 +75,20 @@ public class complaintservice {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String updateComplaint(String complaintData)
 	{
-	//Convert the input string to a JSON object
-	JsonObject Complaintobject = new JsonParser().parse(complaintData).getAsJsonObject();
-	//Read the values from the JSON object
-	String complainid = Complaintobject.get("complaintID").getAsString();
-	String Accountno = Complaintobject.get("AccNo").getAsString();
-	String complainttype = Complaintobject.get("complaintType").getAsString();
-	String mobile = Complaintobject.get("contactNo").getAsString();
-	String c_message = Complaintobject.get("message").getAsString();
-	String c_date = Complaintobject.get("date").getAsString();
-	String A_reply = Complaintobject.get("replyMessage").getAsString();
-	String A_status = Complaintobject.get("status").getAsString();
-	
-	String output = Complaintobj.updateComplaint(complainid, Accountno, complainttype, mobile,c_message,c_date,A_reply,A_status);
-	return output;
+		//Convert the input string to a JSON object
+		JsonObject Complaintobject = new JsonParser().parse(complaintData).getAsJsonObject();
+		//Read the values from the JSON object
+		String complainid = Complaintobject.get("complaintID").getAsString();
+		String Accountno = Complaintobject.get("AccNo").getAsString();
+		String complainttype = Complaintobject.get("complaintType").getAsString();
+		String mobile = Complaintobject.get("contactNo").getAsString();
+		String c_message = Complaintobject.get("message").getAsString();
+		String c_date = Complaintobject.get("date").getAsString();
+		String A_reply = Complaintobject.get("replyMessage").getAsString();
+		String A_status = Complaintobject.get("status").getAsString();
+		
+		String output = Complaintobj.updateComplaint(complainid, Accountno, complainttype, mobile,c_message,c_date,A_reply,A_status);
+		return output;
 	}
 
 	//delete complaint
