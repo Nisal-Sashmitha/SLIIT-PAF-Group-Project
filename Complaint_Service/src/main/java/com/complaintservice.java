@@ -39,16 +39,7 @@ public class complaintservice {
 	
 	}
 
-	//read complaints related to a single account
-	@GET
-	@Path("/Sacoount")
-	@Produces({ MediaType.TEXT_HTML })
-	@Consumes(MediaType.APPLICATION_JSON)
-	public String readComplaints(String id) {
-		JsonObject complaintObject = new JsonParser().parse(id).getAsJsonObject();
-		String complaintID = complaintObject.get("AccNo").getAsString();
-		return Complaintobj.readsinglecomplaints(complaintID );
-	}
+	
 	
 	
 	//insert data 
