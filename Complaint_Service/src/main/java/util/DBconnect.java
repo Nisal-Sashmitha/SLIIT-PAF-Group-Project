@@ -6,8 +6,8 @@ import java.sql.DriverManager;
 public class DBconnect {
 
 	private static String url = "jdbc:mysql://localhost:3306/electronic_grid";
-	private static String userName = "root";
-	private static String password = "Amani_1221";
+	private static String userName = "ElectroGridUser";
+	private static String password = "1234";
 	private static Connection con;
 	
 	//A common method to connect to the DB
