@@ -39,6 +39,15 @@ public class complaintservice {
 	
 	}
 
+	//read pending complaints 
+	@GET
+	@Path("/Pending")
+	@Produces({ MediaType.TEXT_HTML })
+	public String readsComplaints() {
+		
+		return Complaintobj.readpendingcomplaints();
+	}
+	
 	//read complaints related to a single account
 	@GET
 	@Path("/Sacoount")
@@ -49,8 +58,6 @@ public class complaintservice {
 		String complaintID = complaintObject.get("AccNo").getAsString();
 		return Complaintobj.readsinglecomplaints(complaintID );
 	}
-	
-	
 	
 	//insert data 
 	@POST
