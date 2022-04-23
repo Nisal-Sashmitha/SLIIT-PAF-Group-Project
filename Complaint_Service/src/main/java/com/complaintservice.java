@@ -86,15 +86,11 @@ public class complaintservice {
 		JsonObject Complaintobject = new JsonParser().parse(complaintData).getAsJsonObject();
 		//Read the values from the JSON object
 		String complainid = Complaintobject.get("complaintID").getAsString();
-		String Accountno = Complaintobject.get("AccNo").getAsString();
-		String complainttype = Complaintobject.get("complaintType").getAsString();
-		String mobile = Complaintobject.get("contactNo").getAsString();
-		String c_message = Complaintobject.get("message").getAsString();
-		String c_date = Complaintobject.get("date").getAsString();
+	
 		String A_reply = Complaintobject.get("replyMessage").getAsString();
 		String A_status = Complaintobject.get("status").getAsString();
 		
-		String output = Complaintobj.updateComplaint(complainid, Accountno, complainttype, mobile,c_message,c_date,A_reply,A_status);
+		String output = Complaintobj.updateComplaint(complainid,A_reply,A_status);
 		return output;
 	}
 

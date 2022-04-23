@@ -188,7 +188,7 @@ public class complaint {
 	
 	//update
 	
-	public String updateComplaint(String ID, String accountno, String complaint_type, String contact, String message, String c_date,String c_reply,String C_status)
+	public String updateComplaint(String ID,String c_reply,String C_status)
 	
 	{
 	String output = "";
@@ -200,17 +200,13 @@ public class complaint {
 			return "Error while connecting to the database for updating.";
 		}
 		// create a prepared statement
-		String query = "UPDATE complaints SET AccNo=?,complaintType=?,contactNo=?,message=?,date=?,replyMessage=?,status=? WHERE complaintID=?";
+		String query = "UPDATE complaints SET replyMessage=?,status=? WHERE complaintID=?";
 		PreparedStatement preparedStmt = con.prepareStatement(query);
 			// binding values
-			preparedStmt.setString(1, accountno);
-			preparedStmt.setString(2, complaint_type);
-			preparedStmt.setString(3, contact);
-			preparedStmt.setString(4, message);
-			preparedStmt.setString(5, c_date);
-			preparedStmt.setString(6, c_reply);
-			preparedStmt.setString(7, C_status);
-			preparedStmt.setInt(8, Integer.parseInt(ID));
+
+			preparedStmt.setString(1, c_reply);
+			preparedStmt.setString(2, C_status);
+			preparedStmt.setInt(3, Integer.parseInt(ID));
 			// execute the statement
 			preparedStmt.execute();
 			con.close();
