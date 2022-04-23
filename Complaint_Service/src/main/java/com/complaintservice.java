@@ -29,7 +29,7 @@ public class complaintservice {
 	complaint Complaintobj = new complaint();
 	
 	
-	//Read 
+	//Read  all complaints
 	@GET
 	@Path("/")
 	@Produces(MediaType.TEXT_HTML)
@@ -38,13 +38,33 @@ public class complaintservice {
 		return Complaintobj.readcomplaints();
 	
 	}
+
+	//read pending complaints 
+	@GET
+	@Path("/Pending")
+	@Produces({ MediaType.TEXT_HTML })
+	public String readsComplaints() {
+		
+		return Complaintobj.readpendingcomplaints();
+	}
+	
+	//read complaints related to a single account
+	@GET
+	@Path("/Sacoount")
+	@Produces({ MediaType.TEXT_HTML })
+	@Consumes(MediaType.APPLICATION_JSON)
+	public String readComplaints(String id) {
+		JsonObject complaintObject = new JsonParser().parse(id).getAsJsonObject();
+		String complaintID = complaintObject.get("AccNo").getAsString();
+		return Complaintobj.readsinglecomplaints(complaintID );
+	}
 	
 	//insert data 
 	@POST
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_PLAIN)
-	public String insertItem(@FormParam("AccNo") String Acc_no,
+	public String insertcomplaint(@FormParam("AccNo") String Acc_no,
 	@FormParam("complaintType") String complaint_T,		
 	@FormParam("contactNo") String contact_no,
 	@FormParam("message") String message)
@@ -62,37 +82,37 @@ public class complaintservice {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String updateComplaint(String complaintData)
 	{
-	//Convert the input string to a JSON object
-	JsonObject Complaintobject = new JsonParser().parse(complaintData).getAsJsonObject();
-	//Read the values from the JSON object
-	String complainid = Complaintobject.get("complaintID").getAsString();
-	String Accountno = Complaintobject.get("AccNo").getAsString();
-	String complainttype = Complaintobject.get("complaintType").getAsString();
-	String mobile = Complaintobject.get("contactNo").getAsString();
-	String c_message = Complaintobject.get("message").getAsString();
-	String c_date = Complaintobject.get("date").getAsString();
-	String A_reply = Complaintobject.get("replyMessage").getAsString();
-	String A_status = Complaintobject.get("status").getAsString();
-	
-	String output = Complaintobj.updateComplaint(complainid, Accountno, complainttype, mobile,c_message,c_date,A_reply,A_status);
-	return output;
+		//Convert the input string to a JSON object
+		JsonObject Complaintobject = new JsonParser().parse(complaintData).getAsJsonObject();
+		//Read the values from the JSON object
+		String complainid = Complaintobject.get("complaintID").getAsString();
+		String Accountno = Complaintobject.get("AccNo").getAsString();
+		String complainttype = Complaintobject.get("complaintType").getAsString();
+		String mobile = Complaintobject.get("contactNo").getAsString();
+		String c_message = Complaintobject.get("message").getAsString();
+		String c_date = Complaintobject.get("date").getAsString();
+		String A_reply = Complaintobject.get("replyMessage").getAsString();
+		String A_status = Complaintobject.get("status").getAsString();
+		
+		String output = Complaintobj.updateComplaint(complainid, Accountno, complainttype, mobile,c_message,c_date,A_reply,A_status);
+		return output;
 	}
 
-	
-	//delete data
+	//delete complaint
 	@DELETE
 	@Path("/")
-	@Consumes(MediaType.APPLICATION_XML)
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public String deleteItem(String complaintData)
+	public String deleteComplaint(String complaintData)
 	{
-	//Convert the input string to an XML document
-	Document doc = Jsoup.parse(complaintData, "", Parser.xmlParser());
-	//Read the value from the element <itemID>
-	String complaintID = doc.select("complaintID").text();
-	String output =  Complaintobj.deleteItem(complaintID);
-	return output;
+		//Convert the input string to a JSON object
+		JsonObject complaintObject = new JsonParser().parse(complaintData).getAsJsonObject();
+		//Read the value from the JSON object
+		String ComplaintID = complaintObject.get("complaintID").getAsString();
+		String output = Complaintobj.deletecomplaint(ComplaintID);
+		return output;
 	}
+
 	
 
 

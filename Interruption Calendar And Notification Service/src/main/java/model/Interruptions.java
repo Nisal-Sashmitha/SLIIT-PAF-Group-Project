@@ -1,9 +1,15 @@
 package model;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+import utill.SQLDatabase;
+
+
 
 public class Interruptions {
-	private int interruptionID;
+	private String interruptionID;
 	private String date;
 	private String startTime;
 	private String endTime;
@@ -41,7 +47,6 @@ public class Interruptions {
 		return output;
 	}
 	
-	public void interruptionsOfTheConsumer(String NIC) {}
 	
 	public void viewAllInterruptionsOfADay() {}
 	
@@ -107,7 +112,104 @@ public class Interruptions {
 		
 	}
 	
-	public void viewNotifications() {}
+	public String InterruptionsOfTheArea (String InareaID,String InDate)
+	 {
+		String output = "";
+		try
+		{
+			SQLDatabase db = new SQLDatabase();
+			Connection con = db.getConnection();
+			if (con == null)
+			{return "Error while connecting to the database for reading."; }
+			// Prepare the html table to be displayed
+			output = "{ data:[";
+
+			String query = "select * from `interruption` where `areaID`='"+InareaID+"' and `date`='"+InDate+"'";
+			
+			
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			 // execute the statement
+			
+			
+			// iterate through the rows in the result set
+			boolean current = rs.next();
+			while (current)
+			{	
+				interruptionID = Integer.toString(rs.getInt("interruptionID"));
+				date = rs.getString("date");
+				startTime = rs.getString("startTime");
+				endTime = rs.getString("endTime");
+				areaID = rs.getString("areaID");
+				// Add into the html table
+			    
+				output += "{\"InterruptionID\":\""+interruptionID+"\",";
+				output += "\"date\":\""+date+"\",";
+				output += "\"startTime\":\""+startTime+"\",";
+				output += "\"endTime\":\""+endTime+"\",";
+				output += "\"areaID\":\""+areaID+"\"}";
+				
+				current = rs.next();
+				if (!current) {
+					continue;
+				}
+				output += ",";
+			}
+			con.close();
+			// Complete the html table
+			output += "]}";
+		}
+		catch (Exception e)
+		{
+			output = "Error while reading the items.";
+			System.err.println(e.getMessage());
+		}	
+		return output;
+	 }
+	
+	public String viewNotifications(String InaccountNo) {
+		String output = "";
+		try
+		{
+			SQLDatabase db = new SQLDatabase();
+			Connection con = db.getConnection();
+			if (con == null)
+			{return "Error while connecting to the database for reading."; }
+			// Prepare the html table to be displayed
+			
+			LocalDate dateObj = LocalDate.now();
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	        String todayDate = dateObj.format(formatter);
+	        System.out.println(date);
+
+			String query = "select `areaID` from `account` where `AccNo`='"+InaccountNo+"'";
+			
+			
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			boolean current = rs.next();
+			while (current)
+			{	
+				
+				areaID = rs.getString("areaID");
+				return this.InterruptionsOfTheArea(areaID, todayDate);
+				
+			    
+				
+			}
+			
+			
+			con.close();
+			
+		}
+		catch (Exception e)
+		{
+			output = "Error while reading the items.";
+			System.err.println(e.getMessage());
+		}	
+		return output;
+		
+	}
 	
 	
 }

@@ -15,6 +15,8 @@ public class InterruptionCalenderService {
 	
 	
 	Interruptions interruptionObj = new Interruptions();
+	
+	//add interruption
 	@GET
 	@Path("/")
 	@Produces(MediaType.TEXT_HTML)
@@ -40,6 +42,8 @@ public class InterruptionCalenderService {
 		 return output;
 	}
 	
+	//update interruption
+	
 	@PUT
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -58,6 +62,8 @@ public class InterruptionCalenderService {
 		return output;
 	}
 	
+	
+	//delete interruption
 	@DELETE
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -71,6 +77,35 @@ public class InterruptionCalenderService {
 		String output = interruptionObj.deleteInterruption(InterruptionID);
 		return output;
 	}
+	
+	//view interruption
+	
+		//view interruptions for a account
+	@GET
+	@Path("/")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_HTML)
+	public String readItems(String interruptionAreaData)
+	 {
+		JsonObject interruptionDataObject = new JsonParser().parse(interruptionAreaData).getAsJsonObject();
+		String areaID = interruptionDataObject.get("areaID").getAsString();
+		String date = interruptionDataObject.get("date").getAsString();
+		return interruptionObj.InterruptionsOfTheArea ( areaID, date);
+	}
+	
+	@GET
+	@Path("/InterruptionNotification")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_HTML)
+	public String getNotifications(String interruptionAreaData)
+	 {
+		JsonObject interruptionDataObject = new JsonParser().parse(interruptionAreaData).getAsJsonObject();
+		String accountNo = interruptionDataObject.get("accountNo").getAsString();
+		return interruptionObj.viewNotifications ( accountNo);
+	}
+ 
+	
+		//view interruptions in a area for a day
 
 	
 
