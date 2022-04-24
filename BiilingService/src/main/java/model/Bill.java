@@ -90,12 +90,28 @@ public class Bill {
 	public String getSingleBillDetails(String AccNo, int year, int month) {
 		
 		String output=null;
+		String AccNo1=null;
 		
 		try {
 		Connection con = connect();
 		
 		if(con==null) {
 			output="connection error";
+		}
+		
+		//checking whether the account number is invalid 
+		String query2 = "select AccNo from account c where c.AccNo=" +AccNo;
+		Statement stmt1 = con.createStatement();
+		ResultSet res1 = stmt1.executeQuery(query2);
+		
+		//binding billID, status values into variables 
+		if(res1.next()) {
+			AccNo1 =  res1.getString("AccNo");
+		}
+		
+		if(AccNo1==null) {
+			output="invalid Account number";
+			return output;
 		}
 		
 		// Prepare the html table to be displayed
@@ -114,7 +130,7 @@ public class Bill {
 		while (rs.next())
 		{
 			int billID = rs.getInt("billID");
-			String AccNo1 = Integer.toString(rs.getInt("AccNo"));
+			String accNo = Integer.toString(rs.getInt("AccNo"));
 			float creditBalance = rs.getFloat("creditBalance");
 			int lastMeterReadCurrentMonth = rs.getInt("lastMeterReadingsCurrentMonth");
 			int lastMeterReadingLastMonth = rs.getInt("lastMeterReadingsPreviousMonth");
@@ -124,7 +140,7 @@ public class Bill {
 			float monthlyCharge = rs.getFloat("monthlyCharge");
 				
 		// Add a row into the html table
-			output += "<tr><td>" + AccNo1 + "</td>";
+			output += "<tr><td>" + accNo + "</td>";
 			output += "<td>" + creditBalance + "</td>";
 			output += "<td>" + lastMeterReadCurrentMonth + "</td>";
 			output += "<td>" + lastMeterReadingLastMonth + "</td>";
@@ -147,6 +163,7 @@ public class Bill {
 		
 		String result=null;
 		String status="stable";
+		String AccNo1=null;
 		float creditBalance=0;
 		Connection con = connect();
 		
@@ -158,7 +175,7 @@ public class Bill {
 		float monthlyCharge=calMonthluCharge(lastMeterReadingLastMonth,lastMeterReadCurrentMonth);
 		
 		//query for retrieving the creditBalance from account table
-		String query1 = "select creditBalance from account c where c.AccNo=" +AccNo;
+		String query1 = "select creditBalance,AccNo from account c where c.AccNo=" +AccNo;
 		
 		//insert query to insert bill record
 		String query= "insert into Bill(`AccNo`,`creditBalance`,`lastMeterReadingsPreviousMonth`,`lastMeterReadingsCurrentMonth`,`status`,`year`,`month`,`monthlyCharge`)" + "values(?,?,?,?,?,?,?,?)";
@@ -170,6 +187,12 @@ public class Bill {
 			
 			if(res.next()) {
 				creditBalance =  res.getFloat("creditBalance");
+				AccNo1=res.getString("AccNo");		
+			}
+			
+			if(AccNo1==null) {
+				result="invalid account number";
+				return result;
 			}
 			
 			//new credit balance
@@ -258,6 +281,7 @@ public class Bill {
 		String output=null;
 		String status=null;
 		int newBillID=0;
+		String AccNo1=null;
 		float creditBalance=0;
 		float prevMonthlyCharge=0;
 		float newMonthlyCharge=calMonthluCharge(newLastMeterReadingsCurrentMonth,newLastMeterReadingsPreviousMonth);
@@ -267,6 +291,21 @@ public class Bill {
 			
 			if(con==null) {
 				output= "error while connecting to the database";
+			}
+			
+			//checking whether the account number is invalid 
+			String query2 = "select AccNo from account c where c.AccNo=" +ExistingAccNo;
+			Statement stmt1 = con.createStatement();
+			ResultSet res1 = stmt1.executeQuery(query2);
+			
+			//binding billID, status values into variables 
+			if(res1.next()) {
+				AccNo1 =  res1.getString("AccNo");
+			}
+			
+			if(AccNo1==null) {
+				output="invalid Account number";
+				return output;
 			}
 			
 			//trying to get the billID, status,monthlyCharge and creditBalance of the particular record
@@ -353,11 +392,27 @@ public class Bill {
 	public String deleteBill(String AccNo, int year, int month) {
 		
 		String output=null;
+		String AccNo1=null;
 		try {
 			Connection con = connect();
 			
 			if(con==null) {
 				output="Connection error";
+			}
+			
+			//checking whether the account number is invalid 
+			String query1 = "select AccNo from account c where c.AccNo=" +AccNo;
+			Statement stmt1 = con.createStatement();
+			ResultSet res1 = stmt1.executeQuery(query1);
+			
+			//binding billID, status values into variables 
+			if(res1.next()) {
+				AccNo1 =  res1.getString("AccNo");
+			}
+			
+			if(AccNo1==null) {
+				output="invalid Account number";
+				return output;
 			}
 			
 			String query="delete from bill where AccNo=? and year=? and month=?";
