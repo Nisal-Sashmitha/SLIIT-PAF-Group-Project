@@ -40,7 +40,7 @@ public class Interruptions {
 			
 			
 		}catch(Exception e) {
-			output = "Error while inserting the item.";
+			output = "Error while inserting the interruption";
 			System.err.println(e.getMessage());
 		}
 		
@@ -48,7 +48,6 @@ public class Interruptions {
 	}
 	
 	
-	public void viewAllInterruptionsOfADay() {}
 	
 	public String editInterruptions(String interruptionID, String date, String startTime, String endTime,String areaID) {
 		String output = "";
@@ -71,11 +70,11 @@ public class Interruptions {
         	// execute the statement
 			 preparedStmt.execute();
 			 con.close();
-			 output = "Updated successfully";
+			 output = "Updated Successfully";
 		 }
 		 catch (Exception e)
 		 {
-			 output = "Error while updating the item.";
+			 output = "Error while updating the interruption.";
 			 System.err.println(e.getMessage());
 		 }
 		 return output; 
@@ -105,7 +104,7 @@ public class Interruptions {
 		 }
 		 catch (Exception e)
 		 {
-			 output = "Error while deleting the item.";
+			 output = "Error while deleting the interruption";
 			 System.err.println(e.getMessage());
 		 }
 		 return output; 
@@ -180,19 +179,51 @@ public class Interruptions {
 			LocalDate dateObj = LocalDate.now();
 	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	        String todayDate = dateObj.format(formatter);
-	        System.out.println(date);
+	        
 
 			String query = "select `areaID` from `account` where `AccNo`='"+InaccountNo+"'";
 			
 			
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
-			boolean current = rs.next();
-			while (current)
+			
+			while (rs.next())
 			{	
 				
 				areaID = rs.getString("areaID");
-				return this.InterruptionsOfTheArea(areaID, todayDate);
+				
+				query = "select * from `interruption` where `areaID`='"+areaID+"' and `date`>='"+todayDate+"'";
+				System.out.println(areaID);
+				output = "{ data:[";
+				
+				stmt = con.createStatement();
+				ResultSet innerrs = stmt.executeQuery(query);
+				boolean innercurrent = innerrs.next();
+				while (innercurrent)
+				{	
+					interruptionID = Integer.toString(innerrs.getInt("interruptionID"));
+					date = innerrs.getString("date");
+					startTime = innerrs.getString("startTime");
+					endTime = innerrs.getString("endTime");
+					areaID = innerrs.getString("areaID");
+					// Add into the html table
+				    
+					output += "{\"InterruptionID\":\""+interruptionID+"\",";
+					output += "\"date\":\""+date+"\",";
+					output += "\"startTime\":\""+startTime+"\",";
+					output += "\"endTime\":\""+endTime+"\",";
+					output += "\"areaID\":\""+areaID+"\"}";
+					
+					innercurrent = innerrs.next();
+					if (!innercurrent) {
+						continue;
+					}
+					output += ",";
+				}
+				
+				// Complete the html table
+				output += "]}";
+				
 				
 			    
 				

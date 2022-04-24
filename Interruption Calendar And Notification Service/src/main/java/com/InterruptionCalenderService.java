@@ -5,10 +5,16 @@ import model.Interruptions;
 //For REST Service
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
 
 @Path("/Interruptions")
 public class InterruptionCalenderService {
@@ -16,7 +22,7 @@ public class InterruptionCalenderService {
 	
 	Interruptions interruptionObj = new Interruptions();
 	
-	//add interruption
+	
 	@GET
 	@Path("/")
 	@Produces(MediaType.TEXT_HTML)
@@ -24,25 +30,32 @@ public class InterruptionCalenderService {
 	 {
 		return "Hello";
 	 }
+	
+	/*--------------------insert interruptions --------------------*/
 	@POST
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public String insertItem(String itemData)
+	public String insertInterruptions(String interruptionData)
 	{
-		//Convert the input string to a JSON object
-		 JsonObject itemObject = new JsonParser().parse(itemData).getAsJsonObject();
-		//Read the values from the JSON object
 		
-		 String date = itemObject.get("date").getAsString();
-		 String startTime = itemObject.get("startTime").getAsString();
-		 String endTime = itemObject.get("endTime").getAsString();
-		 String areaID = itemObject.get("areaID").getAsString();
+		//Convert the input string to a JSON object
+		 JsonObject innerInterruptionObj = new JsonParser().parse(interruptionData).getAsJsonObject();
+		//Read the values from the JSON object
+		 
+		 
+		 
+		
+		 String date = innerInterruptionObj.get("date").getAsString();
+		 String startTime = innerInterruptionObj.get("startTime").getAsString();
+		 String endTime = innerInterruptionObj.get("endTime").getAsString();
+		 String areaID = innerInterruptionObj.get("areaID").getAsString();
 		 String output = interruptionObj.newInterruption(date, startTime, endTime, areaID);
 		 return output;
 	}
 	
-	//update interruption
+	
+	/*--------------------update interruption--------------------*/
 	
 	@PUT
 	@Path("/")
@@ -53,17 +66,19 @@ public class InterruptionCalenderService {
 		//Convert the input string to a JSON object
 		JsonObject interruptionDataObject = new JsonParser().parse(interruptionData).getAsJsonObject();
     	//Read the values from the JSON object
-		String InterruptionID = interruptionDataObject.get("InterruptionID").getAsString();
+		String interruptionID = interruptionDataObject.get("interruptionID").getAsString();
 		String date = interruptionDataObject.get("date").getAsString();
 		String startTime = interruptionDataObject.get("startTime").getAsString();
 		String endTime = interruptionDataObject.get("endTime").getAsString();
 		String areaID = interruptionDataObject.get("areaID").getAsString();
-		String output = interruptionObj.editInterruptions(InterruptionID, date, startTime, endTime, areaID);
+		String output = interruptionObj.editInterruptions(interruptionID, date, startTime, endTime, areaID);
 		return output;
 	}
 	
 	
-	//delete interruption
+	
+	
+	/*--------------------delete interruption--------------------*/
 	@DELETE
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -79,33 +94,63 @@ public class InterruptionCalenderService {
 	}
 	
 	//view interruption
-	
-		//view interruptions for a account
+		//view interruptions in a area for a day
+		
 	@GET
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.TEXT_HTML)
+	@Produces(MediaType.APPLICATION_JSON)
 	public String readItems(String interruptionAreaData)
 	 {
 		JsonObject interruptionDataObject = new JsonParser().parse(interruptionAreaData).getAsJsonObject();
 		String areaID = interruptionDataObject.get("areaID").getAsString();
 		String date = interruptionDataObject.get("date").getAsString();
-		return interruptionObj.InterruptionsOfTheArea ( areaID, date);
+		return interruptionObj.InterruptionsOfTheArea (areaID, date);
 	}
 	
+		//view interruptions for an account
 	@GET
 	@Path("/InterruptionNotification")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.TEXT_HTML)
+	@Produces(MediaType.APPLICATION_JSON)
 	public String getNotifications(String interruptionAreaData)
 	 {
 		JsonObject interruptionDataObject = new JsonParser().parse(interruptionAreaData).getAsJsonObject();
 		String accountNo = interruptionDataObject.get("accountNo").getAsString();
 		return interruptionObj.viewNotifications ( accountNo);
 	}
+	
+	@GET
+	@Path("/verify")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String verifyUser(String token)
+	{
+		System.out.println("here");
+		ClientResponse response;
+		String output ;
+		try {
+
+	        Client client = Client.create();
+	        
+	        WebResource webResource = client
+	          .resource("http://localhost:8086/ConsumerService/ConsumerService/Auth/verify");
+	        System.out.println("here2");
+	        response = webResource.accept("text/plain")
+	          .post(ClientResponse.class,token);
+
+	        output = response.getEntity(String.class);
+	        System.out.println(response.getStatus());
+	        System.out.println(output);
+	        
+	      } catch (Exception e) {
+	    	  return "error while connecting to the consumer service";
+	      }
+		return output;
+		
+	}
  
 	
-		//view interruptions in a area for a day
+		
 
 	
 

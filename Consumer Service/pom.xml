@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.ICNService</groupId>
-  <artifactId>ICNService</artifactId>
+  <groupId>com.ConsumerService</groupId>
+  <artifactId>ConsumerService</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
   <build>
@@ -35,7 +35,7 @@
  		<groupId>com.sun.jersey</groupId>
  		<artifactId>jersey-server</artifactId>
  		<version>1.19.4</version>
-	</dependency> 
+	</dependency>
 	<dependency>
  		<groupId>mysql</groupId>
  		<artifactId>mysql-connector-java</artifactId>
@@ -51,6 +51,5 @@
  		<artifactId>jsoup</artifactId>
  		<version>1.8.1</version>
 	</dependency>
-	
   </dependencies>
 </project>
