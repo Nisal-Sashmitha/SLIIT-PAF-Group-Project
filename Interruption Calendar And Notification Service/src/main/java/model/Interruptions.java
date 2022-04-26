@@ -22,12 +22,13 @@ public class Interruptions {
 		
 		
 		try {
+			//get database connection
 			SQLDatabase db = new SQLDatabase();
 			Connection con = db.getConnection();
 			
 			PreparedStatement preparedStmt = con.prepareStatement(query);
-			// binding values
 			
+			// binding values
 			preparedStmt.setString(1, date);
 			preparedStmt.setString(2, startTime);
 			preparedStmt.setString(3, endTime);
@@ -53,6 +54,7 @@ public class Interruptions {
 		String output = "";
 		 try
 		 {
+			 //get database connection
 			 SQLDatabase db = new SQLDatabase();
 			 Connection con = db.getConnection();
 			 if (con == null)
@@ -86,6 +88,8 @@ public class Interruptions {
 		String output = "";
 		try
 		 {
+			
+			//get database connection
 			 SQLDatabase db = new SQLDatabase();
 			 Connection con = db.getConnection();
 			 if (con == null)
@@ -116,6 +120,8 @@ public class Interruptions {
 		String output = "";
 		try
 		{
+			
+			//get database connection
 			SQLDatabase db = new SQLDatabase();
 			Connection con = db.getConnection();
 			if (con == null)
@@ -238,6 +244,11 @@ public class Interruptions {
 			output = "Error while reading the items.";
 			System.err.println(e.getMessage());
 		}	
+		
+		//if no data found with the inputs
+		if(output=="") {
+			output = "{ data:[]}";
+		}
 		return output;
 		
 	}

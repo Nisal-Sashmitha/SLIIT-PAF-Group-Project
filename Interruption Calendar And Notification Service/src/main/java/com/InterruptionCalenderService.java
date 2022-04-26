@@ -32,27 +32,32 @@ public class InterruptionCalenderService {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String insertInterruptions(String interruptionData)
 	{
-		
-		//Convert the input string to a JSON object
-		 JsonObject innerInterruptionObj = new JsonParser().parse(interruptionData).getAsJsonObject();
-		//Read the values from the JSON object
-		 
-		 String token = innerInterruptionObj.get("token").getAsString();
+		try {
+			//Convert the input string to a JSON object
+			 JsonObject innerInterruptionObj = new JsonParser().parse(interruptionData).getAsJsonObject();
+			//Read the values from the JSON object
+			 
+			 String token = innerInterruptionObj.get("token").getAsString();
+				
+			//check validity of the request
+			 if(!this.verifyUser(token)) {
+					 
+				 return "Couldn't Insert. Unauthorised User!";
+			 }
+			 
+			 
 			
-		//check validity of the request
-		 if(!this.verifyUser(token)) {
-				 
-			 return "Couldn't Insert. Unauthorised User!";
-		 }
-		 
-		 
+			 String date = innerInterruptionObj.get("date").getAsString();
+			 String startTime = innerInterruptionObj.get("startTime").getAsString();
+			 String endTime = innerInterruptionObj.get("endTime").getAsString();
+			 String areaID = innerInterruptionObj.get("areaID").getAsString();
+			 String output = interruptionObj.newInterruption(date, startTime, endTime, areaID);
+			 return output;
+			
+		}catch(Exception e) {
+			return "invalid input format";
+		}
 		
-		 String date = innerInterruptionObj.get("date").getAsString();
-		 String startTime = innerInterruptionObj.get("startTime").getAsString();
-		 String endTime = innerInterruptionObj.get("endTime").getAsString();
-		 String areaID = innerInterruptionObj.get("areaID").getAsString();
-		 String output = interruptionObj.newInterruption(date, startTime, endTime, areaID);
-		 return output;
 	}
 	
 	
@@ -64,6 +69,7 @@ public class InterruptionCalenderService {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String updateInterruption(String interruptionData)
 	{
+		try {
 		//Convert the input string to a JSON object
 		JsonObject interruptionDataObject = new JsonParser().parse(interruptionData).getAsJsonObject();
     	//Read the values from the JSON object
@@ -82,6 +88,11 @@ public class InterruptionCalenderService {
 		String areaID = interruptionDataObject.get("areaID").getAsString();
 		String output = interruptionObj.editInterruptions(interruptionID, date, startTime, endTime, areaID);
 		return output;
+		
+		}catch(Exception e) {
+			return "invalid input format!";
+		}
+		
 	}
 	
 	
@@ -94,23 +105,28 @@ public class InterruptionCalenderService {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String deleteItem(String interruptionData)
 	{
-		//Convert the input string to a JSON object
-		JsonObject interruptionDataObject = new JsonParser().parse(interruptionData).getAsJsonObject();
-		//Read the value from the json object
-		String token = interruptionDataObject.get("token").getAsString();
+		try {
+			//Convert the input string to a JSON object
+			JsonObject interruptionDataObject = new JsonParser().parse(interruptionData).getAsJsonObject();
+			//Read the value from the json object
+			String token = interruptionDataObject.get("token").getAsString();
 		
-		//check validity of the request
-		 if(!this.verifyUser(token)) {
+			//check validity of the request
+			if(!this.verifyUser(token)) {
 			 
-			 return "Couldn't delete. Unauthorised User!";
-		 }
+				return "Couldn't delete. Unauthorised User!";
+			}
 		 
 		 
 		
 		
-		String InterruptionID = interruptionDataObject.get("interruptionID").getAsString();
-		String output = interruptionObj.deleteInterruption(InterruptionID);
-		return output;
+			String InterruptionID = interruptionDataObject.get("interruptionID").getAsString();
+			String output = interruptionObj.deleteInterruption(InterruptionID);
+			return output;
+		
+		}catch(Exception e) {
+			return "invalid input format!";
+		}
 	}
 	
 	//view interruption
@@ -122,10 +138,18 @@ public class InterruptionCalenderService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String readItems(String interruptionAreaData)
 	 {
-		JsonObject interruptionDataObject = new JsonParser().parse(interruptionAreaData).getAsJsonObject();
-		String areaID = interruptionDataObject.get("areaID").getAsString();
-		String date = interruptionDataObject.get("date").getAsString();
-		return interruptionObj.InterruptionsOfTheArea (areaID, date);
+		try {
+			//Convert the input string to a JSON object
+			JsonObject interruptionDataObject = new JsonParser().parse(interruptionAreaData).getAsJsonObject();
+			
+			//Read the value from the json object
+			String areaID = interruptionDataObject.get("areaID").getAsString();
+			String date = interruptionDataObject.get("date").getAsString();
+			return interruptionObj.InterruptionsOfTheArea (areaID, date);
+		
+	 	}catch(Exception e) {
+			return "invalid input format!";
+		}
 	}
 	
 		//view interruptions for an account
@@ -135,9 +159,16 @@ public class InterruptionCalenderService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getNotifications(String interruptionAreaData)
 	 {
-		JsonObject interruptionDataObject = new JsonParser().parse(interruptionAreaData).getAsJsonObject();
-		String accountNo = interruptionDataObject.get("accountNo").getAsString();
-		return interruptionObj.viewNotifications ( accountNo);
+		try {
+			//Convert the input string to a JSON object
+			JsonObject interruptionDataObject = new JsonParser().parse(interruptionAreaData).getAsJsonObject();
+		
+			//Read the value from the json object
+			String accountNo = interruptionDataObject.get("accountNo").getAsString();
+			return interruptionObj.viewNotifications ( accountNo);
+	 	}catch(Exception e) {
+			return "invalid input format!";
+		}
 	}
 	
 	
