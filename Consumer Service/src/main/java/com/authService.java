@@ -29,9 +29,9 @@ public class authService
 	{
 		System.out.println("In auth:"+val);
 		if(Integer.parseInt(val)%2==0) {
-			return Response.status(Response.Status.OK).entity("Authorised User!").build();
+			return Response.status(Response.Status.OK).entity("true").build();
 		}else {
-			return Response.status(Response.Status.OK).entity("Unauthorised User!").build();
+			return Response.status(Response.Status.OK).entity("false").build();
 		}
 		
 

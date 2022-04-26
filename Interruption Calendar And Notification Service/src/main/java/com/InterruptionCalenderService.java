@@ -23,13 +23,7 @@ public class InterruptionCalenderService {
 	Interruptions interruptionObj = new Interruptions();
 	
 	
-	@GET
-	@Path("/")
-	@Produces(MediaType.TEXT_HTML)
-	public String readInterruptions()
-	 {
-		return "Hello";
-	 }
+	
 	
 	/*--------------------insert interruptions --------------------*/
 	@POST
@@ -43,6 +37,13 @@ public class InterruptionCalenderService {
 		 JsonObject innerInterruptionObj = new JsonParser().parse(interruptionData).getAsJsonObject();
 		//Read the values from the JSON object
 		 
+		 String token = innerInterruptionObj.get("token").getAsString();
+			
+		//check validity of the request
+		 if(!this.verifyUser(token)) {
+				 
+			 return "Couldn't Insert. Unauthorised User!";
+		 }
 		 
 		 
 		
@@ -66,6 +67,14 @@ public class InterruptionCalenderService {
 		//Convert the input string to a JSON object
 		JsonObject interruptionDataObject = new JsonParser().parse(interruptionData).getAsJsonObject();
     	//Read the values from the JSON object
+		String token = interruptionDataObject.get("token").getAsString();
+		
+		//check validity of the request
+		 if(!this.verifyUser(token)) {
+				 
+			 return "Couldn't Update. Unauthorised User!";
+		 }
+		
 		String interruptionID = interruptionDataObject.get("interruptionID").getAsString();
 		String date = interruptionDataObject.get("date").getAsString();
 		String startTime = interruptionDataObject.get("startTime").getAsString();
@@ -87,7 +96,18 @@ public class InterruptionCalenderService {
 	{
 		//Convert the input string to a JSON object
 		JsonObject interruptionDataObject = new JsonParser().parse(interruptionData).getAsJsonObject();
-		//Read the value from the element <itemID>
+		//Read the value from the json object
+		String token = interruptionDataObject.get("token").getAsString();
+		
+		//check validity of the request
+		 if(!this.verifyUser(token)) {
+			 
+			 return "Couldn't delete. Unauthorised User!";
+		 }
+		 
+		 
+		
+		
 		String InterruptionID = interruptionDataObject.get("interruptionID").getAsString();
 		String output = interruptionObj.deleteInterruption(InterruptionID);
 		return output;
@@ -120,14 +140,12 @@ public class InterruptionCalenderService {
 		return interruptionObj.viewNotifications ( accountNo);
 	}
 	
-	@GET
-	@Path("/verify")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String verifyUser(String token)
+	
+	public boolean verifyUser(String token)
 	{
 		System.out.println("here");
 		ClientResponse response;
-		String output ;
+		boolean output ;
 		try {
 
 	        Client client = Client.create();
@@ -138,12 +156,12 @@ public class InterruptionCalenderService {
 	        response = webResource.accept("text/plain")
 	          .post(ClientResponse.class,token);
 
-	        output = response.getEntity(String.class);
+	        output = Boolean.parseBoolean(response.getEntity(String.class))  ;
 	        System.out.println(response.getStatus());
-	        System.out.println(output);
+	        System.out.println("!"+output+"!");
 	        
 	      } catch (Exception e) {
-	    	  return "error while connecting to the consumer service";
+	    	  return false;
 	      }
 		return output;
 		
