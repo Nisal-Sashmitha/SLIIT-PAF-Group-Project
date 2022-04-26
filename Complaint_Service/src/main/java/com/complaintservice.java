@@ -16,6 +16,10 @@ import model.complaint;
 
 //For JSON
 import com.google.gson.*;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+
 //For XML
 import org.jsoup.*;
 import org.jsoup.parser.*;
@@ -59,16 +63,35 @@ public class complaintservice {
 		return Complaintobj.readsinglecomplaints(complaintID );
 	}
 	
+	
 	//insert data 
 	@POST
 	@Path("/")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public String insertcomplaint(@FormParam("AccNo") String Acc_no,
-	@FormParam("complaintType") String complaint_T,		
-	@FormParam("contactNo") String contact_no,
-	@FormParam("message") String message)
+	public String insertcomplaint(String complaintdata)
 	{
+		
+		//Convert the input string to a JSON object
+		 JsonObject complaintobject = new JsonParser().parse(complaintdata).getAsJsonObject();
+		//Read the values from the JSON object
+		 
+		 String token = complaintobject.get("token").getAsString();
+			
+		//check validity of the request
+		 if(!this.verifyUser(token)) {
+				 
+			 return "Couldn't Insert. Unauthorised User!";
+		 }
+		 
+		 String Acc_no = complaintobject.get("AccNo").getAsString();
+		 String complaint_T = complaintobject.get("complaintType").getAsString();
+		 String contact_no = complaintobject.get("contactNo").getAsString();
+		 String message = complaintobject.get("message").getAsString();
+		 
+		 
+		
+		
 	String output =  Complaintobj.Createcomplaint(Acc_no,complaint_T, contact_no, message);
 	return output;
 	}
@@ -84,6 +107,14 @@ public class complaintservice {
 	{
 		//Convert the input string to a JSON object
 		JsonObject Complaintobject = new JsonParser().parse(complaintData).getAsJsonObject();
+		//Read the values from the JSON object
+		String token = Complaintobject.get("token").getAsString();
+		
+		//check validity of the request
+		 if(!this.verifyUser(token)) {
+			 
+			 return "Couldn't update. Unauthorised User!";
+		 }
 		//Read the values from the JSON object
 		String complainid = Complaintobject.get("complaintID").getAsString();
 	
@@ -103,12 +134,47 @@ public class complaintservice {
 	{
 		//Convert the input string to a JSON object
 		JsonObject complaintObject = new JsonParser().parse(complaintData).getAsJsonObject();
+		
+		String token = complaintObject.get("token").getAsString();
+		
+		//check validity of the request
+		 if(!this.verifyUser(token)) {
+			 
+			 return "Couldn't delete. Unauthorised User!";
+		 }
 		//Read the value from the JSON object
 		String ComplaintID = complaintObject.get("complaintID").getAsString();
 		String output = Complaintobj.deletecomplaint(ComplaintID);
 		return output;
 	}
+	
+	
+	//Verify consumer for inter-service communication
+	public boolean verifyUser(String token)
+	{
+		System.out.println("here");
+		ClientResponse response;
+		boolean output ;
+		try {
 
+	        Client client = Client.create();
+	        
+	        WebResource webResource = client
+	          .resource("http://localhost:8084/ConsumerService/ConsumerService/Auth/verify");
+	        System.out.println("here2");
+	        response = webResource.accept("text/plain")
+	          .post(ClientResponse.class,token);
+
+	        output = Boolean.parseBoolean(response.getEntity(String.class))  ;
+	        System.out.println(response.getStatus());
+	        System.out.println("!"+output+"!");
+	        
+	      } catch (Exception e) {
+	    	  return false;
+	      }
+		return output;
+		
+	}
 	
 
 

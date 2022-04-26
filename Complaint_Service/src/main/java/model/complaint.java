@@ -59,8 +59,8 @@ public class complaint {
 	 
 	 }
 	
-	//read pending complaints
-			public String readpendingcomplaints()
+   //read all pending complaints
+		public String readpendingcomplaints()
 			{
 			String output = "";
 			try
@@ -71,8 +71,8 @@ public class complaint {
 						return "Error while connecting to the database for reading."; 
 					}
 						// Prepare the html table to be displayed
-						output = "<table border='1'><tr><th>complaint type</th><th>contact number</th>" +
-						"<th>message</th>" +
+						output = "<table border='1'><tr><th>Complaint type</th><th>contact number</th>" +
+						"<th>Message</th>" +
 						"<th>Date</th>" +
 						"<th>Reply</th>" +
 						"<th>Status</th>" +
@@ -187,7 +187,6 @@ public class complaint {
 		
 	
 	//update
-	
 	public String updateComplaint(String ID,String c_reply,String C_status)
 	
 	{
@@ -219,6 +218,7 @@ public class complaint {
 		}
 		return output;
 	}
+	
 	
 	// Delete Operation
 	public String deletecomplaint(String complaintID)
@@ -256,58 +256,58 @@ public class complaint {
 	try
 	{
 	Connection con = dbconn.connect(); 
-			if (con == null)
-			{
-				return "Error while connecting to the database for reading."; 
-			}
-				// Prepare the html table to be displayed
-				output = "<table border='1'><tr><th>complaint type</th><th>contact number</th>" +
-				"<th>message</th>" +
-				"<th>Date</th>" +
-				"<th>Reply</th>" +
-				"<th>Status</th>" +
-				"<th>Update</th><th>Remove</th></tr>";
-				
-				String query = "select * from complaints where AccNo=  " +complaintIDs;
-				Statement stmt = con.createStatement();
-				ResultSet rs = stmt.executeQuery(query);
-				// iterate through the rows in the result set
-				while (rs.next())
+				if (con == null)
 				{
-					String complaintID = Integer.toString(rs.getInt("complaintID"));
-					String accno = rs.getString("AccNo");
-					String complainttype = rs.getString("complaintType");
-					String mobile = rs.getString("contactNo");
-					String cmessage =  rs.getString("message");
-					String datentime = rs.getString("date");
-					String reply = rs.getString("replyMessage");
-					String status = rs.getString("status");
-					
-					
-					// Add into the html table
-					output += "<tr><td>" + complainttype + "</td>";
-					output += "<td>" + mobile + "</td>";
-					output += "<td>" + cmessage + "</td>";
-					output += "<td>" + datentime + "</td>";
-					output += "<td>" + reply + "</td>";
-					output += "<td>" + status + "</td>";
-					// buttons
-					output += "<td><input name='btnUpdate' type='button' value='Update' class='btn btn-secondary'></td>"
-					+ "<td><form method='post' action='items.jsp'>"
-					+ "<input name='btnRemove' type='submit' value='Remove' class='btn btn-danger'>"
-					+ "<input name='itemID' type='hidden' value='" + complaintID
-					+ "'>" + "</form></td></tr>";
+					return "Error while connecting to the database for reading."; 
 				}
-				con.close();
-				// Complete the html table
-				output += "</table>";
-			}
-	catch (Exception e)
-	{
-		output = "Error while reading the items.";
-		System.err.println(e.getMessage());
-	}
-		return output;
-	}
+					// Prepare the html table to be displayed
+					output = "<table border='1'><tr><th>complaint type</th><th>contact number</th>" +
+					"<th>message</th>" +
+					"<th>Date</th>" +
+					"<th>Reply</th>" +
+					"<th>Status</th>" +
+					"<th>Update</th><th>Remove</th></tr>";
+					
+					String query = "select * from complaints where AccNo=  " +complaintIDs;
+					Statement stmt = con.createStatement();
+					ResultSet rs = stmt.executeQuery(query);
+					// iterate through the rows in the result set
+					while (rs.next())
+					{
+						String complaintID = Integer.toString(rs.getInt("complaintID"));
+						String accno = rs.getString("AccNo");
+						String complainttype = rs.getString("complaintType");
+						String mobile = rs.getString("contactNo");
+						String cmessage =  rs.getString("message");
+						String datentime = rs.getString("date");
+						String reply = rs.getString("replyMessage");
+						String status = rs.getString("status");
+						
+						
+						// Add into the html table
+						output += "<tr><td>" + complainttype + "</td>";
+						output += "<td>" + mobile + "</td>";
+						output += "<td>" + cmessage + "</td>";
+						output += "<td>" + datentime + "</td>";
+						output += "<td>" + reply + "</td>";
+						output += "<td>" + status + "</td>";
+						// buttons
+						output += "<td><input name='btnUpdate' type='button' value='Update' class='btn btn-secondary'></td>"
+						+ "<td><form method='post' action='items.jsp'>"
+						+ "<input name='btnRemove' type='submit' value='Remove' class='btn btn-danger'>"
+						+ "<input name='itemID' type='hidden' value='" + complaintID
+						+ "'>" + "</form></td></tr>";
+					}
+					con.close();
+					// Complete the html table
+					output += "</table>";
+				}
+		catch (Exception e)
+		{
+			output = "Error while reading the items.";
+			System.err.println(e.getMessage());
+		}
+			return output;
+		}
 	
 }
