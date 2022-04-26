@@ -34,6 +34,7 @@ public class Payment {
 		//retrive payment details
 		public String getPaymentDetails() {
 			
+			//variables
 			String output=null;
 			
 			Connection con = connect();
@@ -48,6 +49,7 @@ public class Payment {
 						+ "<tr><th> paymentID</th><th>date</th><th>paidAmount</th>"
 						+ "<th>AccNo</th><th>cardNo</th><th>email</th></tr>";
 							
+						//select query execution
 						String query = "select * from payments";
 						Statement stmt = con.createStatement();
 						ResultSet rs = stmt.executeQuery(query);
@@ -86,6 +88,7 @@ public class Payment {
 		//insert payment
 		public String insertPayment(float amount,String AccNo, int cardNo, String email) {
 			
+			//variables
 			String output=null;
 			String AccNo1=null;
 			float creditBalance=0;
@@ -105,7 +108,6 @@ public class Payment {
 				
 				//validate the Account number 
 				String query = "select * from account where AccNo="+AccNo;
-				
 				Statement stmt = con.createStatement();
 				ResultSet rs = stmt.executeQuery(query);
 				
@@ -118,9 +120,11 @@ public class Payment {
 					return output;
 				}
 				
+				//insert query execution
 				String query1 = "insert into payments(`date`,`paidAmount`,`AccNo`,`cardNo`,`email`) values(?,?,?,?,?)";
 				PreparedStatement statement = con.prepareStatement(query1);
 				
+				//bind the values to placeholder
 				statement.setString(1,formattedDate);
 				statement.setFloat(2, amount);
 				statement.setString(3, AccNo);
@@ -135,7 +139,6 @@ public class Payment {
 				
 				//query for retrieving the creditBalance from account table
 				String query2 = "select creditBalance from account c where c.AccNo=" +AccNo;
-				
 				Statement stmt1 = con.createStatement();
 				ResultSet res = stmt1.executeQuery(query2);
 				
@@ -150,6 +153,7 @@ public class Payment {
 				updateAccount(AccNo,creditBalance);
 				
 				con.close();
+				output="payment is successful";
 				
 			}
 			catch(Exception e) {
@@ -174,7 +178,7 @@ public class Payment {
 				String query="Update account set creditBalance=? where AccNo=?";
 				PreparedStatement preparedStmt = con.prepareStatement(query);
 				
-				//binding values into columns 
+				//binding values into placeholder
 				preparedStmt.setFloat(1, creditBalance);
 				preparedStmt.setString(2,AccNo);
 				

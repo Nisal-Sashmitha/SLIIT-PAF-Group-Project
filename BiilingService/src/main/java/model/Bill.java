@@ -26,6 +26,7 @@ public class Bill {
 	//retrive bill details
 	public String getBillDetails() {
 		
+		//variables
 		String output=null;
 		
 		Connection con = connect();
@@ -40,6 +41,7 @@ public class Bill {
 					+ "<tr><th>Account No</th><th>credit balance</th><th>MeterReadCurrentMonth</th>"
 					+ "<th>MeterReadingLastMonth</th><th>status</th><th>year</th><th>month</th><th>monthlyCharge</th</tr>";
 						
+					//select query execution
 					String query = "select * from Bill";
 					Statement stmt = con.createStatement();
 					ResultSet rs = stmt.executeQuery(query);
@@ -89,6 +91,7 @@ public class Bill {
 	
 	public String getSingleBillDetails(String AccNo, int year, int month) {
 		
+		//variables
 		String output=null;
 		String AccNo1=null;
 		
@@ -119,7 +122,7 @@ public class Bill {
 		+ "<tr><th>Account No</th><th>credit balance</th><th>MeterReadCurrentMonth</th>"
 		+ "<th>MeterReadingLastMonth</th><th>status</th><th>year</th><th>month</th><th>monthlyCharge</th</tr>";
 			
-		
+		//select query
 		String query="select * from bill b where b.AccNo="+AccNo+ " and b.year="+year+ " and b.month="+month;
 		Statement stmt = con.createStatement();
 		
@@ -159,8 +162,10 @@ public class Bill {
 		return output;
 	}
 	
+	//insert method
 	public String InsertBill(String AccNo,int lastMeterReadCurrentMonth,int lastMeterReadingLastMonth,int year, int month) {
 		
+		//variables
 		String result=null;
 		String status="stable";
 		String AccNo1=null;
@@ -182,14 +187,17 @@ public class Bill {
 		
 		try {
 			
+			//Execute the query1
 			Statement stmt = con.createStatement();
 			ResultSet res = stmt.executeQuery(query1);
 			
+			//filtering creditBalance and AccNo 
 			if(res.next()) {
 				creditBalance =  res.getFloat("creditBalance");
 				AccNo1=res.getString("AccNo");		
 			}
 			
+			//check whether the account number is valid
 			if(AccNo1==null) {
 				result="invalid account number";
 				return result;
@@ -209,8 +217,7 @@ public class Bill {
 			PreparedStatement preparedStmt = con.prepareStatement(query);
 			
 			// binding values
-			//here the parameters values of insert method assigned to 1st placeholder, 2nd placeholder,.... in the prepared statement.
-			//preparedStmt.setInt();
+			//here the parameters values of insert method assigned to placeholder in prepared statement
 			System.out.println("accont no" + AccNo);
 			preparedStmt.setString(1, AccNo);
 			preparedStmt.setFloat(2, creditBalance);
@@ -224,6 +231,8 @@ public class Bill {
 			//execute the statement
 			preparedStmt.execute();
 			con.close();
+			
+			result="Succesfully inserted";
 		}
 		catch(Exception e) {
 			e.printStackTrace();
@@ -277,7 +286,10 @@ public class Bill {
 		return total;
 	}
 	
+	//bill update method
 	public String updateBillDetails(String ExistingAccNo,int newLastMeterReadingsPreviousMonth, int newLastMeterReadingsCurrentMonth,int ExistingYear,int ExistingMonth) {
+		
+		//variables
 		String output=null;
 		String status=null;
 		int newBillID=0;
@@ -287,6 +299,7 @@ public class Bill {
 		float newMonthlyCharge=calMonthluCharge(newLastMeterReadingsCurrentMonth,newLastMeterReadingsPreviousMonth);
 		
 		try {
+			
 			Connection con = connect();
 			
 			if(con==null) {
@@ -351,6 +364,8 @@ public class Bill {
 			//execute the query
 			preparedStmt.execute();
 			con.close();
+			
+			output="successfully updated";
 		}
 		catch(Exception e) {
 			e.printStackTrace();
@@ -359,6 +374,7 @@ public class Bill {
 		return output;
 	}
 	
+	//update account
 	public void updateAccount(String AccNo, float creditBalance) {
 		
 		System.out.println("inside update account");
@@ -373,7 +389,7 @@ public class Bill {
 			String query="Update account set creditBalance=? where AccNo=?";
 			PreparedStatement preparedStmt = con.prepareStatement(query);
 			
-			//binding values into columns 
+			//binding values into placeholder
 			preparedStmt.setFloat(1, creditBalance);
 			preparedStmt.setString(2,AccNo);
 			
@@ -391,6 +407,7 @@ public class Bill {
 	//Delete method
 	public String deleteBill(String AccNo, int year, int month) {
 		
+		//variables
 		String output=null;
 		String AccNo1=null;
 		try {
@@ -415,6 +432,7 @@ public class Bill {
 				return output;
 			}
 			
+			//delete query
 			String query="delete from bill where AccNo=? and year=? and month=?";
 			PreparedStatement preparedStmt = con.prepareStatement(query);
 			
@@ -426,6 +444,7 @@ public class Bill {
 			//execute the query
 			preparedStmt.execute();
 			con.close();
+			output="successfully deleted";
 		}
 		catch(Exception e) {
 			e.printStackTrace();		
